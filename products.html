@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ticket Forwarding</title>
+	<h1>PRODUCTS</h1>
+</head>
+
+<body>
+    <link rel="stylesheet" href="style.css"/>
+    <script  type="text/javascript" src="form2.js"></script>
+	
+	<br>
+     <!--<p>PRODUCTS</p>-->
+	<br>
+	<div class="input">
+	<ul>
+	<li>
+	<input placeholder = "Product ID" type="text" name = "id" id="small"  onfocus="placeholder = ''" onblur="placeholder = 'Product ID'">
+	<input placeholder="Product Name" type="text" name = "name" id="medium" onfocus="placeholder = ''" onblur="placeholder = 'Product Name'">
+	<br>
+	<input placeholder="Description" type="text" name = "description" id="long" onfocus="placeholder = ''" onblur="placeholder = 'Description'">
+	<br>
+	<input placeholder="Price, eg:(0.99)" type="text" name = "price" id="small" onfocus="placeholder = ''" onblur="placeholder = 'Price, eg:(0.99)'">
+	<input placeholder="Valid To, eg:(2/8/2014)" type="text" name = "valid" id="medium" onfocus="placeholder = ''" onblur="placeholder = 'Valid To, eg:(2/8/2014)'">
+	<select name="categories" id = "cat0">
+		<option value="no category" selected>No category selected</option>
+		<option value="fruits">Fruits</option>
+		<option value="vegetables">Vegetables</option>
+		<option value="sweets">Sweets</option>
+		<option value="others">Others</option>
+	</select>
+	</li>
+	<!--<li><a href="category.html">CATEGORIES</a></li>-->
+	</ul>
+	</div>
+	
+	<br><br>
+	<input type="button" class="button" value="Add" onclick="addRow()"/>
+	<input type="button" class="button" value="Delete" onclick="deleteRow()" />
+	<input type="button" class="button" id="publish" value="Publish" />
+	<br>
+	<br>
+	<div  class="imagetable">
+		<table  id="datatable">
+			<tr>
+				<th>ID</th>
+				<th>Name</th>
+				<th>Description</th>
+				<th>Price</th>
+				<th>Valid To</th>
+				<th>Category</th>
+				<th>Delete</th>
+			</tr>
+			
+		</table>
+	</div>
+	<br>
+	<input type="button" class="button" value="Back"/>
+   
+</body>
+</html>
