@@ -82,7 +82,7 @@ function deleteRow()
 	{
 		var row = table.rows[i];
 		// index of td contain checkbox is 8
-		var chkbox = row.cells[6].getElementsByTagName("input")[0];
+		var chkbox = row.cells[7].getElementsByTagName("input")[0];
 		if(chkbox != null && chkbox.checked == true)
 		{
 			if(rowCount <= 2)
@@ -97,7 +97,7 @@ function deleteRow()
 	}
 }
 
-
+var imgPath = new Array();
 function addRow()
 {
 	var table = document.getElementById(myTable).tBodies[0];
@@ -107,62 +107,124 @@ function addRow()
 	var td = document.createElement("td");
 	
 	
-	count++;
 	
-	if (document.getElementsByName("id")[0].value!="")
+	
+	if (document.getElementsByName("id")[0].value!="" && document.getElementById("input-file").value != "")
 	{
 	
 	var cell1 = row.insertCell(0);
-	this.id = document.getElementsByName("id")[0].value;
-	cell1.innerHTML = this.id;
-	
+	cell1.innerHTML = document.getElementsByName("id")[0].value;
+	document.getElementsByName("id")[0].value = "";
 	
 	var cell2 = row.insertCell(1);
 	cell2.innerHTML = document.getElementsByName("name")[0].value ;
+	document.getElementsByName("name")[0].value = "";
 	
 	var cell3 = row.insertCell(2);
-	cell3.innerHTML = document.getElementsByName("description")[0].value ;
+	var img = document.createElement("img");
+	img.id = "image";
+	
+	img.src = document.getElementById("input-file").files[0].name;
+	imgPath[count] = img.src;
+	//store image full path in array
+	cell3.appendChild(img);
+	//make it to be default image
+	document.getElementById("productImage").src = "product.gif";
+	
+	
 	var cell4 = row.insertCell(3);
-	cell4.innerHTML = document.getElementsByName("price")[0].value ;
+	cell4.innerHTML = document.getElementsByName("description")[0].value;
+	document.getElementsByName("description")[0].value = "";
 	
 	var cell5 = row.insertCell(4);
-	cell5.innerHTML = document.getElementsByName("valid")[0].value ;
-	
+	cell5.innerHTML = document.getElementsByName("price")[0].value ;
+	document.getElementsByName("price")[0].value = "";
 	
 	var cell6 = row.insertCell(5);
-	var index = document.getElementById("cat0").selectedIndex;
-	this.chkbox = document.getElementById("cat0").options[index].text;
-	cell6.innerHTML = this.chkbox;
+	cell6.innerHTML = document.getElementsByName("valid")[0].value ;
+	document.getElementsByName("valid")[0].value = "";
 	
 	var cell7 = row.insertCell(6);
+	var index = document.getElementById("cat").selectedIndex;
+	this.chkbox = document.getElementById("cat").options[index].text;
+	cell7.innerHTML = this.chkbox;
+	document.getElementById("cat").selectedIndex = 0;
+	
+	var cell7 = row.insertCell(7);
 	var element7 = document.createElement("input");
 	element7.type = "checkbox";
 	element7.name = "chk";
 	cell7.appendChild(element7);
+	count++;
 	}
 	else
 	{
-		alert("No Item");
+		alert("Please fill up this form at least ID and Image");
 	}
+	
 }	
-function getEdit(myTable)
+function getEdit()
 {
-var table = document.getElementById(myTable);
-		var rowCount = table.rows.length;
-		var chkboxCount = 0;
-		for(var i=1; i<rowCount; i++) 
+	var table = document.getElementById(myTable).tBodies[0];
+	var rowCount = table.rows.length;
+	var chkboxCount = 0;
+	var rowPosition = 0;
+	
+	var id = document.getElementsByName("id")[0];
+	var name = document.getElementsByName("name")[0];
+	var image = document.getElementById("productImage");
+	var description = document.getElementsByName("description")[0];
+	var price  = document.getElementsByName("price")[0];
+	var valid = document.getElementsByName("valid")[0];
+	
+	
+		
+	for(var i = 1; i<rowCount; i++) 
+	{
+		 var row = table.rows[i];
+		 var chkbox = row.cells[7].getElementsByTagName("input")[0];
+		 if(chkbox != null && chkbox.checked) 
+		 {
+			 chkboxCount++;
+			 rowPosition = i;
+		 }
+	}
+	if(chkboxCount != 1 && chkboxCount == 0)
+	{
+		alert("ONE item allowed only!");
+	}
+	else
+	{
+		document.getElementById("publish").style.visibility = "visible";
+		document.getElementById("edit").style.visibility = "hidden";
+		document.getElementById("add").style.visibility = "hidden";
+		document.getElementById("delete").style.visibility = "hidden";
+		id.value = table.rows[rowPosition].cells[0].innerHTML;
+		name.value = table.rows[rowPosition].cells[1].innerHTML;
+		description.value = table.rows[rowPosition].cells[3].innerHTML;
+		price.value = table.rows[rowPosition].cells[4].innerHTML;
+		valid.value = table.rows[rowPosition].cells[5].innerHTML;
+		
+		//Get image full path from array 
+		var cellImage = imgPath[rowPosition-1];
+		//image.src = table.rows[rowPosition].cells[2].imgPath(count-1);
+		image.src = cellImage;
+		//return selected option to filling area from table
+		var category = document.getElementsByName("categories")[0];
+		var text = table.rows[rowPosition].cells[6].innerHTML;
+		var i = 0;
+		var found = false;
+		
+		while ( i < category.options.length && !found)
 		{
-			 var row = table.rows[i];
-			 var chkbox = row.cells[0].childNodes[0];
-			 if(chkbox != null && chkbox.checked) 
-			 {
-				 chkboxCount++;
-			 }
-			 if(chkboxCount != 1)
-			 {
-				alert("ONE item allowed only!");
-			 }
+			if(text == category.options[i].text)
+			{
+				category.selectedIndex = i;
+				found = true;
+			}
+			i++;
 		}
+	}
 }
 
 function savedit(myTable){
@@ -171,7 +233,7 @@ var table = document.getElementById(myTable);
 		for(var i=1; i<rowCount; i++) 
 		{
 			 var row = table.rows[i];
-			 var chkbox = row.cells[0].childNodes[0];
+			 var chkbox = row.cells[6].getElementsByTagName("input")[0];
 			 if(null != chkbox && true == chkbox.checked) {
 				 table.rows[i].cells["1"].innerHTML =  document.getElementById("txtname").value ;
 				 table.rows[i].cells["2"].innerHTML = document.getElementById("txtauthor").value;
@@ -187,6 +249,9 @@ var table = document.getElementById(myTable);
 		}
 }
 
+function changeImage() {
+   document.getElementById("productImage").src = document.getElementById("input-file").files[0].name;
+}
 
 /*function printDetails()
 {

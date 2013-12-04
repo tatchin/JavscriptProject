@@ -45,7 +45,32 @@ li
 	width:291px;
 	margin:0 0 15px;
 }
+img
+{
+	height:100px;
+	width:100px;
+	-moz-border-radius: 15px;
+	-webkit-border-radius: 15px;
+	-khtml-border-radius: 15px;
+	border-radius: 15px;
 
+}
+#productImage
+{
+	position: relative;
+	margin: -100px 0 0 15px;
+	width:100px;    
+	height:100px;
+}
+
+#input-file
+{
+	 position: relative;
+	 opacity: 0;
+	 top:-40px;
+	 cursor: pointer;
+	 margin: 0 0 0 -190px;
+}
 .imagetable table 
 { 
 	border-collapse: collapse; 
@@ -255,6 +280,7 @@ table.imagetable td
 {
 	position: relative;
 	float:right;
+	visibility:hidden;
 }
 
 
