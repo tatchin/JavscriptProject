@@ -129,8 +129,7 @@ function addRow()
 	//store image full path in array
 	cell3.appendChild(img);
 	//make it to be default image
-	document.getElementById("productImage").src = "product.gif";
-	
+	defaultImage();
 	
 	var cell4 = row.insertCell(3);
 	cell4.innerHTML = document.getElementsByName("description")[0].value;
@@ -178,20 +177,20 @@ function getEdit()
 	var valid = document.getElementsByName("valid")[0];
 	
 	
-		
+	var chkbox = false;
 	for(var i = 1; i<rowCount; i++) 
 	{
 		 var row = table.rows[i];
-		 var chkbox = row.cells[7].getElementsByTagName("input")[0];
+		 chkbox = row.cells[7].getElementsByTagName("input")[0];
 		 if(chkbox != null && chkbox.checked) 
 		 {
 			 chkboxCount++;
 			 rowPosition = i;
 		 }
 	}
-	if(chkboxCount != 1 && chkboxCount == 0)
+	if(chkboxCount != 1)
 	{
-		alert("ONE item allowed only!");
+		alert("Nothing selected OR ONE item allowed only!");
 	}
 	else
 	{
@@ -224,6 +223,7 @@ function getEdit()
 			}
 			i++;
 		}
+		chkboxCount = 0;
 	}
 }
 
@@ -252,6 +252,13 @@ var table = document.getElementById(myTable);
 function changeImage() {
    document.getElementById("productImage").src = document.getElementById("input-file").files[0].name;
 }
+
+function defaultImage()
+{
+	document.getElementById("productImage").src = "product.gif";
+	document.getElementById("input-file").value = null;
+}
+
 
 /*function printDetails()
 {
