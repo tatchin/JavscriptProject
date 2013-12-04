@@ -1,14 +1,14 @@
-function ItemRegister()
+function ItemRegister(id, name, image, description, price, valid, category)
 {
-	this.id = "Default" ;
-	this.name = "Default";
-	this.description = "Default";
-	this.price = 0.0;
-	this.valid = "Default";
-	this.category = "Default";
-	this.chkbox = "Default";
-	this.addItem = 0;
-	this.printValue = 0;
+	this.id = id ;
+	this.name = name;
+	this.description = description;
+	this.price = price;
+	this.image = image;
+	this.valid = valid;
+	this.category = category;
+	//this.addItem = 0;
+	//this.printValue = 0;
 }
 ItemRegister.prototype.saveData = function()
 {	
@@ -25,7 +25,6 @@ ItemRegister.prototype.saveData = function()
 	this.valid = document.getElementById("valid" + count).value;
 	var index = document.getElementById("cat" + count).selectedIndex;
 	this.chkbox = document.getElementById("cat" + count).options[index].text;
-	alert(this.id);
 	
 	this.list[this.addItem] = new Array();
 	this.list[this.addItem][0] = this.id;
@@ -70,15 +69,18 @@ ItemRegister.prototype.saveData = function()
 
     display.appendChild(tr); 
 }*/
-var item = new ItemRegister()
+
+var item = new ItemRegister();
 var myTable = "datatable";
 var count = 0;
-function deleteRow()  
+var itemDetail = new Array();
+
+ItemRegister.prototype.deleteRow = function()  
 {	
 	var table = document.getElementById(myTable).tBodies[0];
 	var rowCount = table.rows.length;
 	// var i=1 to start after header
-	for(var i=1; i<rowCount; i++) 
+	for(var i = 1; i < rowCount; i++) 
 	{
 		var row = table.rows[i];
 		// index of td contain checkbox is 8
@@ -91,14 +93,15 @@ function deleteRow()
 				break;
 			}
 			table.deleteRow(i);
+			itemDetail.splice(i, 1);
+			count--;
 			rowCount--;
 			i--;
 		}
 	}
 }
 
-var imgPath = new Array();
-function addRow()
+ItemRegister.prototype.addRow = function()
 {
 	var table = document.getElementById(myTable).tBodies[0];
 	var rowCount = table.rows.length;
@@ -106,55 +109,68 @@ function addRow()
 	var tr = document.createElement("tr");
 	var td = document.createElement("td");
 	
-	
-	
-	
-	if (document.getElementsByName("id")[0].value!="" && document.getElementById("input-file").value != "")
+	if (document.getElementsByName("id")[0].value !="" && document.getElementById("input-file").value != "")
 	{
-	
-	var cell1 = row.insertCell(0);
-	cell1.innerHTML = document.getElementsByName("id")[0].value;
-	document.getElementsByName("id")[0].value = "";
-	
-	var cell2 = row.insertCell(1);
-	cell2.innerHTML = document.getElementsByName("name")[0].value ;
-	document.getElementsByName("name")[0].value = "";
-	
-	var cell3 = row.insertCell(2);
-	var img = document.createElement("img");
-	img.id = "image";
-	
-	img.src = document.getElementById("input-file").files[0].name;
-	imgPath[count] = img.src;
-	//store image full path in array
-	cell3.appendChild(img);
-	//make it to be default image
-	defaultImage();
-	
-	var cell4 = row.insertCell(3);
-	cell4.innerHTML = document.getElementsByName("description")[0].value;
-	document.getElementsByName("description")[0].value = "";
-	
-	var cell5 = row.insertCell(4);
-	cell5.innerHTML = document.getElementsByName("price")[0].value ;
-	document.getElementsByName("price")[0].value = "";
-	
-	var cell6 = row.insertCell(5);
-	cell6.innerHTML = document.getElementsByName("valid")[0].value ;
-	document.getElementsByName("valid")[0].value = "";
-	
-	var cell7 = row.insertCell(6);
-	var index = document.getElementById("cat").selectedIndex;
-	this.chkbox = document.getElementById("cat").options[index].text;
-	cell7.innerHTML = this.chkbox;
-	document.getElementById("cat").selectedIndex = 0;
-	
-	var cell7 = row.insertCell(7);
-	var element7 = document.createElement("input");
-	element7.type = "checkbox";
-	element7.name = "chk";
-	cell7.appendChild(element7);
-	count++;
+		var cell1 = row.insertCell(0);
+		var id = document.getElementsByName("id")[0];
+		cell1.innerHTML = id.value;
+
+		var cell2 = row.insertCell(1);
+		var name =  document.getElementsByName("name")[0];
+		cell2.innerHTML = name.value ;
+
+		var cell3 = row.insertCell(2);
+		var img = document.createElement("img");
+		img.id = "image";
+		
+		img.src = document.getElementById("input-file").files[0].name;
+		//imgPath[count] = img.src;
+		//store image full path in array
+		cell3.appendChild(img);
+		
+		
+		var cell4 = row.insertCell(3);
+		var description = document.getElementsByName("description")[0];
+		cell4.innerHTML = description.value;
+
+		var cell5 = row.insertCell(4);
+		var price = document.getElementsByName("price")[0];
+		cell5.innerHTML = price.value ;
+
+		var cell6 = row.insertCell(5);
+		var valid = document.getElementsByName("valid")[0];
+		cell6.innerHTML = valid.value ;
+		
+		var cell7 = row.insertCell(6);
+		var category = document.getElementById("cat");
+		var index = category.selectedIndex;
+		cell7.innerHTML = category.options[index].text;
+		
+		var cell8 = row.insertCell(7);
+		var element8 = document.createElement("input");
+		element8.type = "checkbox";
+		element8.name = "chk";
+		cell8.appendChild(element8);
+		
+		var idText = cell1.innerHTML;
+		var nameText = cell2.innerHTML;
+		var pathText = img.src;
+		var descriptionText = cell4.innerHTML;
+		var priceText = cell5.innerHTML;
+		var validText = cell6.innerHTML;
+		var categoryText = cell7.innerHTML;
+		
+		id.value = "";
+		name.value = "";
+		//make it to be default image
+		defaultImage();
+		description.value = "";
+		price.value = "";
+		valid.value = "";
+		category.selectedIndex = 0;
+		var newItem = new ItemRegister(idText, nameText, pathText, descriptionText, priceText, validText, categoryText);
+		itemDetail[count] = newItem;
+		count++;
 	}
 	else
 	{
@@ -162,23 +178,14 @@ function addRow()
 	}
 	
 }	
-function getEdit()
+ItemRegister.prototype.getEdit = function()
 {
 	var table = document.getElementById(myTable).tBodies[0];
 	var rowCount = table.rows.length;
 	var chkboxCount = 0;
 	var rowPosition = 0;
-	
-	var id = document.getElementsByName("id")[0];
-	var name = document.getElementsByName("name")[0];
-	var image = document.getElementById("productImage");
-	var description = document.getElementsByName("description")[0];
-	var price  = document.getElementsByName("price")[0];
-	var valid = document.getElementsByName("valid")[0];
-	
-	
 	var chkbox = false;
-	for(var i = 1; i<rowCount; i++) 
+	for(var i = 1; i < rowCount; i++) 
 	{
 		 var row = table.rows[i];
 		 chkbox = row.cells[7].getElementsByTagName("input")[0];
@@ -198,58 +205,236 @@ function getEdit()
 		document.getElementById("edit").style.visibility = "hidden";
 		document.getElementById("add").style.visibility = "hidden";
 		document.getElementById("delete").style.visibility = "hidden";
-		id.value = table.rows[rowPosition].cells[0].innerHTML;
-		name.value = table.rows[rowPosition].cells[1].innerHTML;
-		description.value = table.rows[rowPosition].cells[3].innerHTML;
-		price.value = table.rows[rowPosition].cells[4].innerHTML;
-		valid.value = table.rows[rowPosition].cells[5].innerHTML;
+		document.getElementsByName("id")[0].value = itemDetail[count-1].id;
+		document.getElementsByName("name")[0].value = itemDetail[count-1].name;
+		document.getElementsByName("description")[0].value = itemDetail[count-1].description;
+		document.getElementsByName("price")[0].value = itemDetail[count-1].price;
+		document.getElementsByName("valid")[0].value = itemDetail[count-1].valid;
 		
 		//Get image full path from array 
-		var cellImage = imgPath[rowPosition-1];
 		//image.src = table.rows[rowPosition].cells[2].imgPath(count-1);
-		image.src = cellImage;
+		document.getElementById("productImage").src = itemDetail[count-1].image;
 		//return selected option to filling area from table
-		var category = document.getElementsByName("categories")[0];
-		var text = table.rows[rowPosition].cells[6].innerHTML;
+		var cat = document.getElementsByName("categories")[0];
+		var text = itemDetail[count-1].category;
 		var i = 0;
 		var found = false;
 		
-		while ( i < category.options.length && !found)
+		while ( i < cat.options.length && !found)
 		{
-			if(text == category.options[i].text)
+			if(text == cat.options[i].text)
 			{
-				category.selectedIndex = i;
+				cat.selectedIndex = i;
 				found = true;
 			}
 			i++;
 		}
 		chkboxCount = 0;
+		disableCheckBox();
 	}
 }
-
-function savedit(myTable){
-var table = document.getElementById(myTable);
-		var rowCount = table.rows.length;
-		for(var i=1; i<rowCount; i++) 
+var temp = new Array();
+ItemRegister.prototype.search = function()
+{
+	document.getElementById("add").style.visibility = "hidden";
+	document.getElementById("edit").style.visibility = "hidden";
+	document.getElementById("delete").style.visibility = "hidden";
+	document.getElementById("back").style.visibility = "visible";
+	var search = document.getElementById("searchBar").value;
+	var match = false;
+	var location = 0;
+	for(var i = 0; i < itemDetail.length; i++)
+	{
+		for(var j = 0; j < search.length; j++)
 		{
-			 var row = table.rows[i];
-			 var chkbox = row.cells[6].getElementsByTagName("input")[0];
-			 if(null != chkbox && true == chkbox.checked) {
-				 table.rows[i].cells["1"].innerHTML =  document.getElementById("txtname").value ;
-				 table.rows[i].cells["2"].innerHTML = document.getElementById("txtauthor").value;
-				table.rows[i].cells["3"].innerHTML  =  document.getElementById("txtcdate").value ;
-				 //document.getElementById("et1").value = table.rows[i].cells["4"].innerHTML;
-				 //document.getElementById("ep1").value = table.rows[i].cells["5"].innerHTML;
-				  document.getElementById("txtname").value = '';
-				  document.getElementById("txtauthor").value    = '';
-				  document.getElementById("txtcdate").value     = '' ;
-				  chkbox.checked    = false;
-				 document.getElementById("crw").value = i;
-			 }
+			if(search.charAt(j) == itemDetail[i].id.charAt(j))
+			{
+				match = true;
+			}
+			else
+			{
+				match = false;
+				break;
+			}
 		}
+		if(match)
+		{
+			temp[location] = itemDetail[i];
+			location++;
+			
+		}
+	}
+	
+	clearTable();
+	var table = document.getElementById(myTable).tBodies[0];
+	var rowCount = temp.length;
+	for(var i=0; i<rowCount; i++) 
+	{
+		
+		var row = table.insertRow(1);
+		var cell1 = row.insertCell(0);
+		cell1.innerHTML = temp[i].id;
+		
+		var cell2 = row.insertCell(1);
+		cell2.innerHTML = temp[i].name;
+
+		var cell3 = row.insertCell(2);
+		var img = document.createElement("img");
+		img.src = temp[i].image;
+		//imgPath[count] = img.src;
+		//store image full path in array
+		cell3.appendChild(img);
+		
+		var cell4 = row.insertCell(3);
+		cell4.innerHTML = temp[i].description;
+
+		var cell5 = row.insertCell(4);
+		cell5.innerHTML = temp[i].price ;
+
+		var cell6 = row.insertCell(5);
+		cell6.innerHTML = temp[i].valid;
+		
+		var cell7 = row.insertCell(6);
+		cell7.innerHTML = temp[i].category;
+		
+		var cell8 = row.insertCell(7);
+		var element8 = document.createElement("input");
+		element8.type = "checkbox";
+		element8.name = "chk";
+		cell8.appendChild(element8);
+	}
+	disableCheckBox();
 }
 
-function changeImage() {
+ItemRegister.prototype.afterSearch = function()
+{
+	document.getElementById("add").style.visibility = "visible";
+	document.getElementById("edit").style.visibility = "visible";
+	document.getElementById("delete").style.visibility = "visible";
+	document.getElementById("back").style.visibility = "hidden";
+	
+	clearTable();
+	var table = document.getElementById(myTable).tBodies[0];
+	var rowCount = itemDetail.length;
+	for(var i = 0; i<rowCount; i++) 
+	{
+		var row = table.insertRow(1);
+		var cell1 = row.insertCell(0);
+		cell1.innerHTML = itemDetail[i].id;
+
+		var cell2 = row.insertCell(1);
+		cell2.innerHTML = itemDetail[i].name;
+
+		var cell3 = row.insertCell(2);
+		var img = document.createElement("img");
+		img.src = itemDetail[i].image;
+		//imgPath[count] = img.src;
+		//store image full path in array
+		cell3.appendChild(img);
+		
+		
+		var cell4 = row.insertCell(3);
+		cell4.innerHTML = itemDetail[i].description;
+
+		var cell5 = row.insertCell(4);
+		cell5.innerHTML = itemDetail[i].price ;
+
+		var cell6 = row.insertCell(5);
+		cell6.innerHTML = itemDetail[i].valid;
+		
+		var cell7 = row.insertCell(6);
+		cell7.innerHTML = itemDetail[i].category;
+		
+		var cell8 = row.insertCell(7);
+		var element8 = document.createElement("input");
+		element8.type = "checkbox";
+		element8.name = "chk";
+		cell8.appendChild(element8);
+	}
+
+}
+ItemRegister.prototype.publish = function()
+{
+	var table = document.getElementById(myTable).tBodies[0];
+	var rowCount = table.rows.length;
+	for(var i=1; i<rowCount; i++) 
+	{
+		 var row = table.rows[i];
+		 var chkbox = row.cells[7].getElementsByTagName("input")[0];
+		 if(chkbox != null  && chkbox.checked) 
+		 {
+			var cell1 = row.cells[0];
+			var id = document.getElementsByName("id")[0];
+			cell1.innerHTML = id.value;
+
+			var cell2 = row.cells[1];
+			var name = document.getElementsByName("name")[0];
+			cell2.innerHTML = name.value ;
+
+			var cell3 = row.cells[2];
+			if(document.getElementById("input-file").value == null)
+			{
+				var path = itemDetail[i-1].image
+				document.getElementsByTagName("img")[0].src = path;
+			}
+			else
+			{
+				var path = document.getElementById("input-file").value;
+				document.getElementsByTagName("img")[0].src = path;
+			}
+			
+			var cell4 = row.cells[3];
+			var description = document.getElementsByName("description")[0];
+			cell4.innerHTML = description.value;
+
+			var cell5 = row.cells[4];
+			var price = document.getElementsByName("price")[0];
+			cell5.innerHTML = price.value ;
+
+			var cell6 = row.cells[5];
+			var valid = document.getElementsByName("valid")[0];
+			cell6.innerHTML = valid.value ;
+			
+			var cell7 = row.cells[6];
+			var category = document.getElementById("cat");
+			var index = category.selectedIndex;
+			cell7.innerHTML = category.options[index].text;
+			
+			
+			
+			var idText = cell1.innerHTML;
+			var nameText = cell2.innerHTML;
+			//var pathText = img.src;
+			var descriptionText = cell4.innerHTML;
+			var priceText = cell5.innerHTML;
+			var validText = cell6.innerHTML;
+			var categoryText = cell7.innerHTML;
+			
+			id.value = "";
+			name.value = "";
+			//make it to be default image
+			defaultImage();
+			description.value = "";
+			price.value = "";
+			valid.value = "";
+			category.selectedIndex = 0;
+			var newItem = new ItemRegister(idText, nameText, path, descriptionText, priceText, validText, categoryText);
+			itemDetail.splice(i,1, newItem);
+			enableCheckBox();
+			chkbox.checked = false;
+			document.getElementById("publish").style.visibility = "hidden";
+			document.getElementById("edit").style.visibility = "visible";
+			document.getElementById("add").style.visibility = "visible";
+			document.getElementById("delete").style.visibility = "visible";
+			
+			break;
+		 }
+	}
+
+}
+
+function changeImage() 
+{
    document.getElementById("productImage").src = document.getElementById("input-file").files[0].name;
 }
 
@@ -259,6 +444,40 @@ function defaultImage()
 	document.getElementById("input-file").value = null;
 }
 
+function disableCheckBox()
+{
+	var table = document.getElementById(myTable).tBodies[0];
+	var rowCount = table.rows.length;
+	for (var i = 1; i < rowCount; i++)
+	{	
+		var row = table.rows[i];
+		row.cells[7].getElementsByTagName("input")[0].disabled=true;
+	}
+
+}
+
+function clearTable()
+{
+	var table = document.getElementById(myTable).tBodies[0];
+	var rowCount = table.rows.length;
+	// var i=1 to start after header
+	for(var i = rowCount - 1; i >= 1; i--) 
+	{
+		var row = table.rows[i];
+		table.deleteRow(i);
+	}
+}
+function enableCheckBox()
+{
+	var table = document.getElementById(myTable).tBodies[0];
+	var rowCount = table.rows.length;
+	for (var i = 1; i < rowCount; i++)
+	{	
+		var row = table.rows[i];
+		row.cells[7].getElementsByTagName("input")[0].disabled=false;
+	}
+
+}
 
 /*function printDetails()
 {
