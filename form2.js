@@ -1,3 +1,8 @@
+var item = new ItemRegister();
+var myTable = "datatable"; //table id
+var count = 0;
+var itemDetail = new Array(); //array to store add item
+var temp = new Array(); //Create temp array for search function
 function ItemRegister(id, name, image, description, price, valid, category)
 {
 	this.id = id ;
@@ -7,91 +12,18 @@ function ItemRegister(id, name, image, description, price, valid, category)
 	this.image = image;
 	this.valid = valid;
 	this.category = category;
-	//this.addItem = 0;
-	//this.printValue = 0;
 }
-ItemRegister.prototype.saveData = function()
-{	
-	//x[count] = new Array();
-	var table = document.getElementById(myTable).tBodies[0];
-	var rowCount = table.rows.length;
-	var cellCount = table.rows[0].cells.length;
-	var list = this.list;
-
-	this.id = document.getElementById("id" + count).value;
-	this.name = document.getElementById("name" + count).value;
-	this.description = document.getElementById("description" + count).value;
-	this.price = document.getElementById("price" + count).value;
-	this.valid = document.getElementById("valid" + count).value;
-	var index = document.getElementById("cat" + count).selectedIndex;
-	this.chkbox = document.getElementById("cat" + count).options[index].text;
-	
-	this.list[this.addItem] = new Array();
-	this.list[this.addItem][0] = this.id;
-	this.list[this.addItem][1] = this.name;
-	this.list[this.addItem][2] = this.description;
-	this.list[this.addItem][3] = this.price;
-	this.list[this.addItem][4] = this.valid;
-	this.list[this.addItem][5] = this.chkbox;
-	
-	//localStorage.list[0]= this.id;
-	//this.list[this.addItem+1] = this.name;
-	//this.list[this.addItem+2] = this.description;
-	//this.list[this.addItem+3] = this.price;
-	//this.list[this.addItem+4] = this.valid;
-	//this.list[this.addItem+5] = this.category;
-	//this.list[this.addItem+6] = this.chkbox;
-	
-	this.addItem++;
-}
-
-/*ItemRegister.prototype.printItems = function()
-{
-	
-	var display = document.getElementById("datatable");
-    //var locate = window.location
-	//locate = this.list[0]; 
-	var list = this.list;
-    var tr = document.createElement("tr");
-	
-	//var html5docs = JSON.parse(localStorage.list);
-
-    var tdText = document.createElement("td");
-    tdText.innerHTML = html5docs; 
-	alert(this.id);
-	//tdText.style.color = color;
-    tr.appendChild(tdText);
-
-    var tdAmount = document.createElement("td");
-    tdAmount.innerHTML = html5docs; 
-	//tdAmount.style.color = color;
-    tr.appendChild(tdAmount);
-
-    display.appendChild(tr); 
-}*/
-
-var item = new ItemRegister();
-var myTable = "datatable";
-var count = 0;
-var itemDetail = new Array();
 
 ItemRegister.prototype.deleteRow = function()  
 {	
 	var table = document.getElementById(myTable).tBodies[0];
 	var rowCount = table.rows.length;
-	// var i=1 to start after header
 	for(var i = 1; i < rowCount; i++) 
 	{
 		var row = table.rows[i];
-		// index of td contain checkbox is 8
 		var chkbox = row.cells[7].getElementsByTagName("input")[0];
 		if(chkbox != null && chkbox.checked == true)
 		{
-			if(rowCount <= 2)
-			{
-				alert("Cannot delete all the rows.");
-				break;
-			}
 			table.deleteRow(i);
 			itemDetail.splice(i, 1);
 			count--;
@@ -106,11 +38,10 @@ ItemRegister.prototype.addRow = function()
 	var table = document.getElementById(myTable).tBodies[0];
 	var rowCount = table.rows.length;
 	var row = table.insertRow(rowCount);
-	var tr = document.createElement("tr");
-	var td = document.createElement("td");
 	
 	if (document.getElementsByName("id")[0].value !="" && document.getElementById("input-file").value != "")
 	{
+		//Insert each cell into each row and fill up the details
 		var cell1 = row.insertCell(0);
 		var id = document.getElementsByName("id")[0];
 		cell1.innerHTML = id.value;
@@ -124,7 +55,6 @@ ItemRegister.prototype.addRow = function()
 		img.id = "image";
 		
 		img.src = document.getElementById("input-file").files[0].name;
-		//imgPath[count] = img.src;
 		//store image full path in array
 		cell3.appendChild(img);
 		
@@ -152,6 +82,7 @@ ItemRegister.prototype.addRow = function()
 		element8.name = "chk";
 		cell8.appendChild(element8);
 		
+		//declare variables and store the texts inside cells
 		var idText = cell1.innerHTML;
 		var nameText = cell2.innerHTML;
 		var pathText = img.src;
@@ -160,6 +91,7 @@ ItemRegister.prototype.addRow = function()
 		var validText = cell6.innerHTML;
 		var categoryText = cell7.innerHTML;
 		
+		//Set the text boxes to default value
 		id.value = "";
 		name.value = "";
 		//make it to be default image
@@ -168,16 +100,21 @@ ItemRegister.prototype.addRow = function()
 		price.value = "";
 		valid.value = "";
 		category.selectedIndex = 0;
+		
+		//declare a new object variable and stores those variables above
 		var newItem = new ItemRegister(idText, nameText, pathText, descriptionText, priceText, validText, categoryText);
+		//Add the object into array
 		itemDetail[count] = newItem;
 		count++;
+		//local-store the count times
+		localStorage["count"] = count;
 	}
 	else
 	{
 		alert("Please fill up this form at least ID and Image");
 	}
-	
 }	
+
 ItemRegister.prototype.getEdit = function()
 {
 	var table = document.getElementById(myTable).tBodies[0];
@@ -189,7 +126,7 @@ ItemRegister.prototype.getEdit = function()
 	{
 		 var row = table.rows[i];
 		 chkbox = row.cells[7].getElementsByTagName("input")[0];
-		 if(chkbox != null && chkbox.checked) 
+		 if (chkbox != null && chkbox.checked) 
 		 {
 			 chkboxCount++;
 			 rowPosition = i;
@@ -201,25 +138,26 @@ ItemRegister.prototype.getEdit = function()
 	}
 	else
 	{
+		//edit the data which retrives from table of a certain row selected by checkbox 
 		document.getElementById("publish").style.visibility = "visible";
 		document.getElementById("edit").style.visibility = "hidden";
 		document.getElementById("add").style.visibility = "hidden";
 		document.getElementById("delete").style.visibility = "hidden";
-		document.getElementsByName("id")[0].value = itemDetail[count-1].id;
-		document.getElementsByName("name")[0].value = itemDetail[count-1].name;
-		document.getElementsByName("description")[0].value = itemDetail[count-1].description;
-		document.getElementsByName("price")[0].value = itemDetail[count-1].price;
-		document.getElementsByName("valid")[0].value = itemDetail[count-1].valid;
+		document.getElementsByName("id")[0].value = itemDetail[count - 1].id;
+		document.getElementsByName("name")[0].value = itemDetail[count - 1].name;
+		document.getElementsByName("description")[0].value = itemDetail[count - 1].description;
+		document.getElementsByName("price")[0].value = itemDetail[count - 1].price;
+		document.getElementsByName("valid")[0].value = itemDetail[count - 1].valid;
 		
 		//Get image full path from array 
-		//image.src = table.rows[rowPosition].cells[2].imgPath(count-1);
-		document.getElementById("productImage").src = itemDetail[count-1].image;
+		document.getElementById("productImage").src = itemDetail[count - 1].image;
 		//return selected option to filling area from table
 		var cat = document.getElementsByName("categories")[0];
-		var text = itemDetail[count-1].category;
+		var text = itemDetail[count - 1].category;
 		var i = 0;
 		var found = false;
 		
+		//retrive select option from data table
 		while ( i < cat.options.length && !found)
 		{
 			if(text == cat.options[i].text)
@@ -230,10 +168,11 @@ ItemRegister.prototype.getEdit = function()
 			i++;
 		}
 		chkboxCount = 0;
+		//Disable check boxes 
 		disableCheckBox();
 	}
 }
-var temp = new Array();
+
 ItemRegister.prototype.search = function()
 {
 	document.getElementById("add").style.visibility = "hidden";
@@ -264,11 +203,11 @@ ItemRegister.prototype.search = function()
 			
 		}
 	}
-	
+	//clear table contents
 	clearTable();
 	var table = document.getElementById(myTable).tBodies[0];
 	var rowCount = temp.length;
-	for(var i=0; i<rowCount; i++) 
+	for(var i = 0; i < rowCount; i++) 
 	{
 		
 		var row = table.insertRow(1);
@@ -281,7 +220,6 @@ ItemRegister.prototype.search = function()
 		var cell3 = row.insertCell(2);
 		var img = document.createElement("img");
 		img.src = temp[i].image;
-		//imgPath[count] = img.src;
 		//store image full path in array
 		cell3.appendChild(img);
 		
@@ -303,6 +241,7 @@ ItemRegister.prototype.search = function()
 		element8.name = "chk";
 		cell8.appendChild(element8);
 	}
+	//disable check boxes 
 	disableCheckBox();
 }
 
@@ -313,10 +252,12 @@ ItemRegister.prototype.afterSearch = function()
 	document.getElementById("delete").style.visibility = "visible";
 	document.getElementById("back").style.visibility = "hidden";
 	
+	//remove all rows
 	clearTable();
 	var table = document.getElementById(myTable).tBodies[0];
 	var rowCount = itemDetail.length;
-	for(var i = 0; i<rowCount; i++) 
+	//create the rows and fill in data after searching
+	for(var i = 0; i < rowCount; i++) 
 	{
 		var row = table.insertRow(1);
 		var cell1 = row.insertCell(0);
@@ -328,7 +269,6 @@ ItemRegister.prototype.afterSearch = function()
 		var cell3 = row.insertCell(2);
 		var img = document.createElement("img");
 		img.src = itemDetail[i].image;
-		//imgPath[count] = img.src;
 		//store image full path in array
 		cell3.appendChild(img);
 		
@@ -353,11 +293,14 @@ ItemRegister.prototype.afterSearch = function()
 	}
 
 }
+
+
 ItemRegister.prototype.publish = function()
 {
 	var table = document.getElementById(myTable).tBodies[0];
 	var rowCount = table.rows.length;
-	for(var i=1; i<rowCount; i++) 
+	//publish again table when getting done edit
+	for(var i = 1; i < rowCount; i++) 
 	{
 		 var row = table.rows[i];
 		 var chkbox = row.cells[7].getElementsByTagName("input")[0];
@@ -374,7 +317,7 @@ ItemRegister.prototype.publish = function()
 			var cell3 = row.cells[2];
 			if(document.getElementById("input-file").value == null)
 			{
-				var path = itemDetail[i-1].image
+				var path = itemDetail[i - 1].image
 				document.getElementsByTagName("img")[0].src = path;
 			}
 			else
@@ -404,7 +347,6 @@ ItemRegister.prototype.publish = function()
 			
 			var idText = cell1.innerHTML;
 			var nameText = cell2.innerHTML;
-			//var pathText = img.src;
 			var descriptionText = cell4.innerHTML;
 			var priceText = cell5.innerHTML;
 			var validText = cell6.innerHTML;
@@ -426,24 +368,26 @@ ItemRegister.prototype.publish = function()
 			document.getElementById("edit").style.visibility = "visible";
 			document.getElementById("add").style.visibility = "visible";
 			document.getElementById("delete").style.visibility = "visible";
-			
 			break;
 		 }
 	}
 
 }
 
+//change image path
 function changeImage() 
 {
    document.getElementById("productImage").src = document.getElementById("input-file").files[0].name;
 }
 
+//default path of image
 function defaultImage()
 {
 	document.getElementById("productImage").src = "product.gif";
 	document.getElementById("input-file").value = null;
 }
 
+//disable all check boxes
 function disableCheckBox()
 {
 	var table = document.getElementById(myTable).tBodies[0];
@@ -456,6 +400,7 @@ function disableCheckBox()
 
 }
 
+//remove all rows
 function clearTable()
 {
 	var table = document.getElementById(myTable).tBodies[0];
@@ -467,6 +412,8 @@ function clearTable()
 		table.deleteRow(i);
 	}
 }
+
+//enable checkboxes
 function enableCheckBox()
 {
 	var table = document.getElementById(myTable).tBodies[0];
@@ -479,28 +426,96 @@ function enableCheckBox()
 
 }
 
-/*function printDetails()
+//localStorage store value
+function saveValue() 
 {
-	var table = document.getElementById(myTable).tBodies[0];
-	var rowCount = table.rows.length;
-	var cellCount = table.rows[0].cells.length;
-	alert(x[0][0]);
-	for(var i= 1; i < cellCount; i++) 
+	var itemCount = localStorage["count"];
+	if (itemDetail[0] != null)
 	{
-		var row = table.insertRow(i);
-		var cell1 = row.insertCell(0);
-		var cell2 = row.insertCell(1);
-		var cell3 = row.insertCell(2);
-		var cell4 = row.insertCell(3);
-		var cell5 = row.insertCell(4);
-		var cell6 = row.insertCell(5);
-		
-		cell1.innerHTML = x[i-1][x]; 
-		cell2.innerHTML = x[i-1][x+1];
-		cell3.innerHTML = x[i-1][x+2];
-		cell4.innerHTML = x[i-1][x+3];
-		cell5.innerHTML = x[i-1][x+4];
-		cell6.innerHTML = x[i-1][x+5];
+		for (var i = 0; i < itemCount; i++)
+		{
+			//var value = count - 1;
+			localStorage.setItem("item" + i, JSON.stringify(itemDetail[i]));
+		}
 	}
-}*/
+}
 
+//localStorage clear value
+function clearLocalStorage()
+{
+	localStorage.clear();
+}
+
+//localStorage load value
+function recallValue() 
+{
+    var table = document.getElementById(myTable).tBodies[0];
+	var itemCount = localStorage["count"];
+	if (itemDetail[0] != null)
+	{
+		for (var i = 0; i < itemCount; i++) 
+		{
+			var itemString = localStorage.getItem("item" + i);
+			var itemObject = JSON.parse(itemString);
+			itemDetail[i] = itemObject;
+			var id = itemDetail[i].id;
+			var name = itemDetail[i].name;
+			var image = itemDetail[i].image;
+			var description = itemDetail[i].description;
+			var price = itemDetail[i].description;
+			var valid = itemDetail[i].valid;
+			var category = itemDetail[i].category;
+			
+			var row = table.insertRow(1);
+			var cell1 = row.insertCell(0);
+			cell1.innerHTML = id;
+			
+			var cell2 =  row.insertCell(1);
+			cell2.innerHTML = name;
+			
+			var cell3 = row.insertCell(2);
+			var imageElement = document.createElement("img");
+			imageElement.src = image;
+			cell3.appendChild(imageElement);
+			
+			var cell4 = row.insertCell(3);
+			cell4.innerHTML = description;
+			
+			var cell5 = row.insertCell(4);
+			cell5.innerHTML = price;
+			
+			var cell6 = row.insertCell(5);
+			cell6.innerHTML = valid;
+			
+			var cell7 = row.insertCell(6);
+			cell7.innerHTML = category;
+			
+			var cell8 = row.insertCell(7);
+			var chkElement = document.createElement("input");
+			chkElement.type = "checkbox";
+			chkElement.name = "chk";
+			cell8.appendChild(chkElement);	
+		}
+	}
+}
+
+//onclick - checked and unchecked all checkboxes 
+function checkAll(bx) 
+{
+	var table = document.getElementById(myTable);
+	var rowCount = table.rows.length;
+	var chk = false;
+	for(var i = 1; i < rowCount; i++) 
+	{
+		var row = table.rows[i];
+		chk = row.cells[7].getElementsByTagName("input");
+		if(bx != null && bx.checked) 
+		{
+			chk[0].checked = true;
+		}
+		else
+		{
+			chk[0].checked = false;
+		}
+	}
+}

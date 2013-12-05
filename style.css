@@ -259,8 +259,19 @@ table.imagetable td
 	visibility:hidden;
 }
 
+#clear
+{
+	position: relative;
+	float:right;
+	margin-top:10px;
+}
 
-
+#save
+{
+	position: relative;
+	float:right;
+	margin-top:10px;
+}
 	
 .button:hover 
 {
