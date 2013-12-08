@@ -225,7 +225,15 @@ function search()
 	var search = document.getElementById("searchBar").value;
 	var match = false;
 	var location = 0;
-	for(var i = 0; i < itemDetail.length; i++)
+	if (!isNaN(saveCount) || saveCount >= 0)
+	{
+		var length = saveCount;
+	}
+	else
+	{
+		var length = count;
+	}
+	for(i = 0; i < length; i++)
 	{
 		for(var j = 0; j < search.length; j++)
 		{
