@@ -5,7 +5,7 @@
 	<h1>PRODUCTS</h1>
 </head>
 
-<body onLoad = "recallValue()">
+<body onload = "recallValue()">
     <link rel = "stylesheet" href = "style.css"/>
     <script  type = "text/javascript" src = "form2.js"></script>
 	
@@ -32,7 +32,7 @@
 		<img id = "productImage" src = "product.gif"/>
 		<input id = "input-file"  onchange = "changeImage()" type = "file" accept = "image/jpeg, image/png" value = "">
 		<input placeholder = "Search..." type="text" name = "search" id="searchBar"/>
-		<input type = "button" class = "button" id = "search" value = "Search" onclick = "item.search()"/>
+		<input type = "button" class = "button" id = "search" value = "Search" onclick = "search()"/>
 		</li>
 		<!--<li><a href="category.html">CATEGORIES</a></li>-->
 		</ul>
@@ -59,9 +59,8 @@
 			</tr>
 		</table>
 	</div>
-	<input type = "button" class = "button" id = "back" value = "Back" onclick = "item.afterSearch()"/>
+	<input type = "button" class = "button" id = "back" value = "Back" onclick = "afterSearch()"/>
 	<input type = "button" class = "button" id = "clear" value = "Clear" onclick = "clearLocalStorage()"/>
-	<input type = "button" class = "button" id = "save" value = "Save" onclick = "saveValue()"/>
 	<br>
 </body>
 </html>
