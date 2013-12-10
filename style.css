@@ -1,10 +1,9 @@
 body
 {
     background: url('lavender-canvas-fabric-texture.jpg');
-	background-repeat:no-repeat;
+	background-repeat:y-repeat;
 	background-size: 100%;
 }
-
 
 ul
 {

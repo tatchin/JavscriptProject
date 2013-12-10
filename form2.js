@@ -1,12 +1,12 @@
 var item = new ItemRegister();
 var myTable = "datatable"; //table id
-var count = 0;
+var count = 0; //first time visit count
 var itemDetail = new Array(); //array to store add item
-var temp = new Array(); //Create temp array for search function
 var saveCount = parseInt(localStorage["count"]); //save the previous visit's count
 
 function ItemRegister(id, name, image, description, price, valid, category)
 {
+	//Declare varaibles
 	this.id = id ;
 	this.name = name;
 	this.description = description;
@@ -26,9 +26,9 @@ ItemRegister.prototype.deleteRow = function()
 		var chkbox = row.cells[7].getElementsByTagName("input")[0];
 		if(chkbox != null && chkbox.checked == true)
 		{
-			localStorage.removeItem("item" + parseInt(i - 1));
+			//delete the selected index of array then rearrage the array
+			itemDetail.splice(i - 1, 1);
 			table.deleteRow(i);
-			itemDetail.splice(i, 1);
 			
 			if (!isNaN(saveCount) && saveCount >= 0)
 			{
@@ -46,6 +46,7 @@ ItemRegister.prototype.deleteRow = function()
 			i--;
 		}
 	}
+	saveValue(); //Save all rows values 
 }
 
 ItemRegister.prototype.addRow = function()
@@ -119,10 +120,12 @@ ItemRegister.prototype.addRow = function()
 		//declare a new object variable and stores those variables above
 		var newItem = new ItemRegister(idText, nameText, pathText, descriptionText, priceText, validText, categoryText);
 		//Add the object into array
+		//saveCount is the localStorage of previous visited count
 		if (!isNaN(saveCount) && saveCount != 0)
 		{
 			itemDetail[saveCount] = newItem;
-			localStorage.setItem("item" + saveCount, JSON.stringify(itemDetail[saveCount]));
+			localStorage.setItem("item" + saveCount, JSON.stringify(itemDetail[saveCount])); //Store the items into localStorage automatically
+																							//after clicking add button
 			saveCount++;
 			localStorage["count"] = saveCount;
 		}
@@ -138,7 +141,7 @@ ItemRegister.prototype.addRow = function()
 	}
 	else
 	{
-		alert("Please fill up this form at least ID and Image");
+		alert("Please fill up this form at least ID and Image"); //Make sure user at least enter ID and choose a product image
 	}
 }	
 
@@ -155,13 +158,13 @@ ItemRegister.prototype.getEdit = function()
 		 chkbox = row.cells[7].getElementsByTagName("input")[0];
 		 if (chkbox != null && chkbox.checked) 
 		 {
-			 chkboxCount++;
-			 rowPosition = i;
+			 chkboxCount++; //count the checkBox is Checked times
+			 rowPosition = i; //Save the position row of the check box is checked
 		 }
 	}
 	if(chkboxCount != 1)
 	{
-		alert("Nothing selected OR ONE item allowed only!");
+		alert("Nothing selected OR ONE item allowed only!"); //only One item could be edited
 	}
 	else
 	{
@@ -170,32 +173,19 @@ ItemRegister.prototype.getEdit = function()
 		document.getElementById("edit").style.visibility = "hidden";
 		document.getElementById("add").style.visibility = "hidden";
 		document.getElementById("delete").style.visibility = "hidden";
-		if (!isNaN(saveCount) || saveCount >= 0)
-		{
-			document.getElementsByName("id")[0].value = itemDetail[saveCount - 1].id;
-			document.getElementsByName("name")[0].value = itemDetail[saveCount - 1].name;
-			document.getElementsByName("description")[0].value = itemDetail[saveCount - 1].description;
-			document.getElementsByName("price")[0].value = itemDetail[saveCount - 1].price;
-			document.getElementsByName("valid")[0].value = itemDetail[saveCount - 1].valid;
+
+		//Save the edited details back to array from text fields
+		document.getElementsByName("id")[0].value = itemDetail[rowPosition - 1].id;
+		document.getElementsByName("name")[0].value = itemDetail[rowPosition - 1].name;
+		document.getElementsByName("description")[0].value = itemDetail[rowPosition - 1].description;
+		document.getElementsByName("price")[0].value = itemDetail[rowPosition - 1].price;
+		document.getElementsByName("valid")[0].value = itemDetail[rowPosition - 1].valid;
 			
-			//Get image full path from array 
-			document.getElementById("productImage").src = itemDetail[saveCount - 1].image;
-			//return selected option to filling area from table
-			var text = itemDetail[saveCount - 1].category;
-		}
-		else
-		{
-			document.getElementsByName("id")[0].value = itemDetail[count - 1].id;
-			document.getElementsByName("name")[0].value = itemDetail[count - 1].name;
-			document.getElementsByName("description")[0].value = itemDetail[count - 1].description;
-			document.getElementsByName("price")[0].value = itemDetail[count - 1].price;
-			document.getElementsByName("valid")[0].value = itemDetail[count - 1].valid;
-			
-			//Get image full path from array 
-			document.getElementById("productImage").src = itemDetail[count - 1].image;
-			//return selected option to filling area from table
-			var text = itemDetail[count - 1].category;
-		}
+		//Get image full path from array 
+		document.getElementById("productImage").src = itemDetail[rowPosition - 1].image;
+		//return selected option to filling area from table
+		var text = itemDetail[rowPosition - 1].category;
+
 		var cat = document.getElementsByName("categories")[0];
 		var i = 0;
 		var found = false;
@@ -210,6 +200,7 @@ ItemRegister.prototype.getEdit = function()
 			}
 			i++;
 		}
+		//re-define chkboxCount to 0
 		chkboxCount = 0;
 		//Disable check boxes 
 		disableCheckBox();
@@ -218,33 +209,42 @@ ItemRegister.prototype.getEdit = function()
 
 function search()
 {
+	var temp = new Array(); //Create temp array for search function
+	//Set the visibility of buttons
 	document.getElementById("add").style.visibility = "hidden";
 	document.getElementById("edit").style.visibility = "hidden";
 	document.getElementById("delete").style.visibility = "hidden";
 	document.getElementById("back").style.visibility = "visible";
+	document.getElementById("clear").style.visibility = "hidden";
 	var search = document.getElementById("searchBar").value;
+	//the string match of search textField
 	var match = false;
 	var location = 0;
-	if (!isNaN(saveCount) || saveCount >= 0)
+	if (!isNaN(saveCount) && saveCount >= 0)
 	{
-		var length = saveCount;
+		var rowLength = saveCount; //if second time visit or refresh the webpage then use "SaveCount"
 	}
 	else
 	{
-		var length = count;
+		var rowLength = count; //first time visit will be changed to "count"
 	}
-	for(i = 0; i < length; i++)
+	
+	//Search the words 
+	for(i = 0; i < rowLength; i++)
 	{
 		for(var j = 0; j < search.length; j++)
 		{
 			if(itemDetail[i] != null)
 			{
+				//get the search String from search text area and then compare
+				//each character with each char of product id
 				if(search.charAt(j) == itemDetail[i].id.charAt(j))
 				{
 					match = true;
 				}
 				else
 				{
+					//break if the search string does not match
 					match = false;
 					break;
 				}
@@ -252,11 +252,12 @@ function search()
 		}
 		if(match)
 		{
+			//purpose of temp array is used to store the matched search items details only from original itemDetail array
 			temp[location] = itemDetail[i];
 			location++;
-			
 		}
 	}
+	
 	//clear table contents
 	clearTable();
 	var table = document.getElementById(myTable).tBodies[0];
@@ -265,7 +266,7 @@ function search()
 	{
 		if(temp[i] != null)
 		{
-			var row = table.insertRow(1);
+			var row = table.insertRow(i + 1);
 			var cell1 = row.insertCell(0);
 			cell1.innerHTML = temp[i].id;
 			
@@ -297,27 +298,29 @@ function search()
 			cell8.appendChild(element8);
 		}
 	}
+	
 	//disable check boxes 
 	disableCheckBox();
 }
 
 function afterSearch ()
 {
+	//Set the visibility of buttons
 	document.getElementById("add").style.visibility = "visible";
 	document.getElementById("edit").style.visibility = "visible";
 	document.getElementById("delete").style.visibility = "visible";
 	document.getElementById("back").style.visibility = "hidden";
+	document.getElementById("clear").style.visibility = "visible";
 	
 	//remove all rows
 	clearTable();
 	var table = document.getElementById(myTable).tBodies[0];
-	var rowCount = itemDetail.length;
 	//create the rows and fill in data after searching
-	for(var i = 0; i < rowCount; i++) 
+	for(var i = 0; i < itemDetail.length; i++) 
 	{
 		if(itemDetail[i].id != null)
 		{
-			var row = table.insertRow(1);
+			var row = table.insertRow(i + 1);
 			var cell1 = row.insertCell(0);
 			cell1.innerHTML = itemDetail[i].id;
 
@@ -329,7 +332,6 @@ function afterSearch ()
 			img.src = itemDetail[i].image;
 			//store image full path in array
 			cell3.appendChild(img);
-			
 			
 			var cell4 = row.insertCell(3);
 			cell4.innerHTML = itemDetail[i].description;
@@ -353,7 +355,6 @@ function afterSearch ()
 
 }
 
-
 ItemRegister.prototype.publish = function()
 {
 	var table = document.getElementById(myTable).tBodies[0];
@@ -374,16 +375,16 @@ ItemRegister.prototype.publish = function()
 			cell2.innerHTML = name.value ;
 
 			var cell3 = row.cells[2];
-			if(document.getElementById("input-file").value == null || document.getElementById("input-file").value == "" )
+			var path;
+			if(document.getElementById("input-file").value == "" )//|| document.getElementById("input-file").value == null 
 			{
-				var path = itemDetail[i - 1].image
-				document.getElementsByTagName("img")[0].src = path;
+				path = itemDetail[i - 1].image //use original file path if img.value is ""
 			}
 			else
 			{
-				var path = document.getElementById("input-file").value;
-				document.getElementsByTagName("img")[0].src = path;
+				path = document.getElementById("input-file").files[0].name; //get new file path name of img
 			}
+			cell3.getElementsByTagName("img")[0].src = path;
 			
 			var cell4 = row.cells[3];
 			var description = document.getElementsByName("description")[0];
@@ -420,9 +421,9 @@ ItemRegister.prototype.publish = function()
 			valid.value = "";
 			category.selectedIndex = 0;
 			var newItem = new ItemRegister(idText, nameText, path, descriptionText, priceText, validText, categoryText);
-			itemDetail[i-1] = newItem;
+			itemDetail[i - 1] = newItem;
 			localStorage.setItem("item" + parseInt(i-1), JSON.stringify(itemDetail[i-1]));
-			itemDetail.splice(i,1, newItem);
+			//itemDetail.splice(i,1, newItem);
 			enableCheckBox();
 			chkbox.checked = false;
 			document.getElementById("publish").style.visibility = "hidden";
@@ -492,6 +493,7 @@ function enableCheckBox()
 function clearLocalStorage()
 {
 	localStorage.clear();
+	clearTable();
 }
 
 //localStorage load value
@@ -499,9 +501,9 @@ function recallValue()
 {
 	//add cells and fill up the data from localStorage
     var table = document.getElementById(myTable).tBodies[0];
-	if (!isNaN(saveCount) || saveCount >= 0)
+	if (!isNaN(saveCount) && saveCount >= 0)
 	{
-		for (var i = 0; i < saveCount + 10; i++) 
+		for (var i = 0; i < saveCount; i++) 
 		{
 			var itemString = localStorage.getItem("item" + i);
 			if (itemString != " ")
@@ -518,7 +520,7 @@ function recallValue()
 					var valid = itemDetail[i].valid;
 					var category = itemDetail[i].category;
 					
-					var row = table.insertRow(1);
+					var row = table.insertRow(i + 1);
 					var cell1 = row.insertCell(0);
 					cell1.innerHTML = id;
 					
@@ -551,7 +553,14 @@ function recallValue()
 			}
 		}
 	}
-	
+}
+//Save the values via localStorage
+function saveValue()
+{
+	for(var i = 0; i < itemDetail.length; i ++)
+	{
+		localStorage.setItem("item" + i, JSON.stringify(itemDetail[i]));
+	}
 }
 
 //onclick - checked and unchecked all checkboxes 
